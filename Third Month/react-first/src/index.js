@@ -1,10 +1,4 @@
-import { User } from './User'
-
-function main(){
-    let user = new User(25, 190);
-    console.log(user);
-    // console.log(1);
-}
-
-main();
-
+import React, { Component } from "react";
+import ReactDOM from "react-dom";
+import App from "./component/app.component";
+ReactDOM.render(<App />, document.querySelector("#root"));
