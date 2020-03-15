@@ -1,6 +1,5 @@
 import * as React from "react";
 import "./App.scss";
-import CitiesList from "../CitiesList/CitiesList";
 import City from "../CitiesList/City/City";
 import MainContent from "../MainContent/MainContent";
 import CityModel from "../../models/CityModel"
@@ -13,16 +12,17 @@ interface IAppProps{
 }
 
 interface IAppState{
-    selectedCityName : string
+    selectedCityName : string,
+    cities : CityModel[]
 }
 
 export default class App extends React.Component<IAppProps, IAppState>{
-    private cities : CityModel[];
     constructor(props : any){
         super(props)
-        this.cities = this.InitCities();
+        let cities = this.InitCities();
         this.state={
-            selectedCityName: "Moscow"
+            selectedCityName: "Moscow",
+            cities : this.InitCities()
         }      
     }
 
@@ -30,7 +30,7 @@ export default class App extends React.Component<IAppProps, IAppState>{
         return(
             <div id="main">
                 <div className="cities-list">
-                    { this.cities.map((item : CityModel, i : number) => <City onClickCity={this.ChangeCity} selectedCityName={this.state.selectedCityName} name={item.name} key={i} />) }
+                    { this.state.cities.map((item : CityModel, i : number) => <City onClickCity={this.ChangeCity} selectedCityName={this.state.selectedCityName} name={item.name} key={i} />) }
                     <AddCity addCity={this.AddCity} />
                 </div>
                 <MainContent>
@@ -39,11 +39,19 @@ export default class App extends React.Component<IAppProps, IAppState>{
             </div>
         )
     }
-    public AddCity(){
-
+    public AddCity = (newCity : CityModel) =>{
+        let cities = this.state.cities;
+        for (let city of cities){
+            if (city.name === newCity.name){
+                alert("City with this name already exists");
+                return;
+            }
+        }
+        cities.push(newCity)
+        this.setState({ cities : cities });
     }
     public SelectCityByName = () => {
-        for (let city of this.cities){
+        for (let city of this.state.cities){
             if (city.name === this.state.selectedCityName){
                 return city;
             }
@@ -52,7 +60,7 @@ export default class App extends React.Component<IAppProps, IAppState>{
     }
 
     public ChangeCity = (name : string) => {
-        for (let city of this.cities){
+        for (let city of this.state.cities){
             if (city.name === name){
                 this.setState({selectedCityName : name});
                 break;
