@@ -1,28 +1,44 @@
 import * as React from "react";
 import "./City.scss";
+import { connect } from "react-redux"
 
 interface ICityProps{
-    name : string,
-    key : number,
-    selectedCityName : string,
-    onClickCity : any
+    // name : string,
+    // key : number,
+    // selectedCityName : string,
+    // onClickCity : any
+    state : any,
+    children : string,
+    changeSelectedCity : any
 }
 
-export default class City extends React.Component<ICityProps>{
+class City extends React.Component<ICityProps>{
     constructor(props : ICityProps){
         super(props)
         console.log(props);
     }
+
     public render(){
-        if (this.props.selectedCityName === this.props.name){
-            return <div onClick={this.CityClick} className="city active">{this.props.name}</div>
+        if (this.props.state.selectedCityName === this.props.children){
+            return <div onClick={this.ChangeSelectedCity} className="city active">{this.props.children}</div>
         }
         else{
-            return <div onClick={this.CityClick} className="city">{this.props.name}</div>
+            return <div onClick={this.ChangeSelectedCity} className="city">{this.props.children}</div>
         }
     }
-    private CityClick = () =>{
-        // console.log(this.props);
-        this.props.onClickCity(this.props.name)
+
+    private ChangeSelectedCity = () => {
+        this.props.changeSelectedCity(this.props.children)
     }
 }
+
+export default connect(
+    state => ({
+        state : state
+    }),
+    dispatch => ({
+        changeSelectedCity : (cityName : string) => {
+            dispatch({ type : 'CHANGE_SELECTED_CITY', payload : cityName })
+        }
+    })
+)(City);

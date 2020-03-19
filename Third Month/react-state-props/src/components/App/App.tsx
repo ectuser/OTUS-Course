@@ -6,9 +6,12 @@ import CityModel from "../../models/CityModel"
 import { WeatherStatus } from "../../models/WeatherStatus"
 import "../CitiesList/CitiesList.scss";
 import AddCity from "../AddCity/AddCity"
+import { connect } from "react-redux"
+import { createStore } from 'redux'
+import { Provider } from "react-redux";
 
 interface IAppProps{
-
+    state : any
 }
 
 interface IAppState{
@@ -16,22 +19,18 @@ interface IAppState{
     cities : CityModel[]
 }
 
-export default class App extends React.Component<IAppProps, IAppState>{
+
+class App extends React.Component<IAppProps, IAppState>{
     constructor(props : any){
-        super(props)
-        let cities = this.InitCities();
-        this.state={
-            selectedCityName: "Moscow",
-            cities : this.InitCities()
-        }      
+        super(props)  
     }
 
     public render(){
         return(
             <div id="main">
                 <div className="cities-list">
-                    { this.state.cities.map((item : CityModel, i : number) => <City onClickCity={this.ChangeCity} selectedCityName={this.state.selectedCityName} name={item.name} key={i} />) }
-                    <AddCity addCity={this.AddCity} />
+        {this.props.state.cities.map((item : CityModel, i : number) => <City key={i}>{item.name}</City>)}
+                    <AddCity />
                 </div>
                 <MainContent>
                     {this.SelectCityByName()}
@@ -51,8 +50,8 @@ export default class App extends React.Component<IAppProps, IAppState>{
         this.setState({ cities : cities });
     }
     public SelectCityByName = () => {
-        for (let city of this.state.cities){
-            if (city.name === this.state.selectedCityName){
+        for (let city of this.props.state.cities){
+            if (city.name === this.props.state.selectedCityName){
                 return city;
             }
         }
@@ -67,14 +66,13 @@ export default class App extends React.Component<IAppProps, IAppState>{
             }
         }
     }
-
-    private InitCities(){
-        let cities : CityModel[] = [];
-        cities.push(new CityModel("Moscow", 12, 5, WeatherStatus.Clear))
-        cities.push(new CityModel("Tomsk", -2, 6, WeatherStatus.Cloudly))
-        cities.push(new CityModel("London", 15, 2, WeatherStatus.Cloudly))
-        cities.push(new CityModel("Paris", 13, 4, WeatherStatus.Rainy))
-        cities.push(new CityModel("Helsinki", 4, 6, WeatherStatus.Clear))
-        return cities;
-    }
 }
+
+
+export default connect(
+    state => ({
+        state : state
+    }),
+    dispatch => ({
+    })
+)(App);

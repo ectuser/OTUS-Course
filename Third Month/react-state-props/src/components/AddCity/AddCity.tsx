@@ -2,13 +2,14 @@ import React from "react";
 import "./AddCity.scss";
 import { WeatherStatus } from "../../models/WeatherStatus"
 import CityModel from "../../models/CityModel"
+import { connect } from "react-redux"
 
 
 interface IAddCityProps{
-    addCity : any
+    // addCity : any
 }
 
-export default class AddCity extends React.Component<IAddCityProps>{
+class AddCity extends React.Component<IAddCityProps>{
 
     public render(){
         return(
@@ -45,6 +46,20 @@ export default class AddCity extends React.Component<IAddCityProps>{
         // console.log(typeof(weatherStatus));
         // @ts-ignore
         let newCity = new CityModel(cityName, parseInt(temperature), parseInt(windSpeed), WeatherStatus[weatherStatus])
-        this.props.addCity(newCity);
+        // this.props.addCity(newCity);
+        // @ts-ignore
+        this.props.addCity(newCity)
     }
 }
+
+
+export default connect(
+    state => ({
+        
+    }),
+    dispatch => ({
+        addCity: (city : CityModel) => {
+            dispatch({ type : 'ADD_CITY', payload : city })
+        }
+    })
+)(AddCity);
