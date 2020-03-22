@@ -28,7 +28,9 @@ class City extends React.Component<ICityProps>{
     }
 
     private ChangeSelectedCity = () => {
-        this.props.changeSelectedCity(this.props.children)
+        if (this.props.state.selectedCityName !== this.props.children){
+            this.props.changeSelectedCity(this.props.children)
+        }
     }
 }
 
