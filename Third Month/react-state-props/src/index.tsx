@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import "./styles/global.scss";
-import App from "./components/App/App"
+import { App } from "./components/App/App"
 import { connect } from "react-redux"
 import { createStore } from 'redux'
 import { Provider } from "react-redux";
@@ -27,16 +27,8 @@ const reducer = (state = initialState, action : any) => {
   	if (action.type === 'ADD_CITY'){
     	// console.log(state, action.payload);
     	return {
-			selectedCityName : state.selectedCityName,
 			cities : [...state.cities, action.payload]
 		}
-	}
-	else if (action.type === 'CHANGE_SELECTED_CITY'){
-		console.log(action);
-		return ({
-			selectedCityName : action.payload,
-			cities : [...state.cities]
-		});
 	}
   	return state;
 }

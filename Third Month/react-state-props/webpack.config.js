@@ -25,6 +25,8 @@ module.exports = {
       compress: true,
       port: 9000,
       progress: true,
-      watchContentBase: true
+      watchContentBase: true,
+
+      historyApiFallback : true
     },
   };

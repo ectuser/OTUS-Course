@@ -1,46 +1,26 @@
 import * as React from "react";
 import "./City.scss";
-import { connect } from "react-redux"
+import { connect, useDispatch, useSelector } from "react-redux";
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link,
+    useRouteMatch,
+    useParams
+  } from "react-router-dom";
 
 interface ICityProps{
-    // name : string,
-    // key : number,
-    // selectedCityName : string,
-    // onClickCity : any
-    state : any,
     children : string,
-    changeSelectedCity : any
 }
 
-class City extends React.Component<ICityProps>{
-    constructor(props : ICityProps){
-        super(props)
-        console.log(props);
-    }
+export const City = ({ children } : ICityProps) => {
+    let { cityName } = useParams();
 
-    public render(){
-        if (this.props.state.selectedCityName === this.props.children){
-            return <div onClick={this.ChangeSelectedCity} className="city active">{this.props.children}</div>
-        }
-        else{
-            return <div onClick={this.ChangeSelectedCity} className="city">{this.props.children}</div>
-        }
+    if (cityName === children){
+        return <div className="city active">{children}</div>
     }
-
-    private ChangeSelectedCity = () => {
-        if (this.props.state.selectedCityName !== this.props.children){
-            this.props.changeSelectedCity(this.props.children)
-        }
+    else{
+        return <div className="city">{children}</div>
     }
 }
-
-export default connect(
-    state => ({
-        state : state
-    }),
-    dispatch => ({
-        changeSelectedCity : (cityName : string) => {
-            dispatch({ type : 'CHANGE_SELECTED_CITY', payload : cityName })
-        }
-    })
-)(City);

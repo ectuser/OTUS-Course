@@ -1,78 +1,46 @@
 import * as React from "react";
 import "./App.scss";
-import City from "../CitiesList/City/City";
-import MainContent from "../MainContent/MainContent";
+import { City } from "../CitiesList/City/City";
+import { MainContent } from "../MainContent/MainContent";
 import CityModel from "../../models/CityModel"
 import { WeatherStatus } from "../../models/WeatherStatus"
 import "../CitiesList/CitiesList.scss";
-import AddCity from "../AddCity/AddCity"
-import { connect } from "react-redux"
+import { AddCity } from "../AddCity/AddCity"
+import { connect, useSelector } from "react-redux"
 import { createStore } from 'redux'
 import { Provider } from "react-redux";
-
-interface IAppProps{
-    state : any
-}
-
-interface IAppState{
-    selectedCityName : string,
-    cities : CityModel[]
-}
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link,
+    useRouteMatch
+} from "react-router-dom";
 
 
-class App extends React.Component<IAppProps, IAppState>{
-    constructor(props : any){
-        super(props)  
-    }
+export const App = () => {
+    // @ts-ignore
+    const cities = useSelector(state => state.cities);
 
-    public render(){
-        return(
-            <div id="main">
+    return(
+        <div id="main">
+            <Router>
                 <div className="cities-list">
-        {this.props.state.cities.map((item : CityModel, i : number) => <City key={i}>{item.name}</City>)}
+                    {cities.map((item : CityModel, i : number) =>(
+                    <Link key={i} to={`/${item.name}`}>
+                        <Switch>
+                        <Route path="/:cityName">
+                            <City>{item.name}</City>
+                        </Route>
+                        <Router>
+                            <City>{item.name}</City>
+                        </Router>
+                        </Switch>
+                    </Link>))}
                     <AddCity />
                 </div>
-                <MainContent>
-                    {this.SelectCityByName()}
-                </MainContent>
-            </div>
-        )
-    }
-    public AddCity = (newCity : CityModel) =>{
-        let cities = this.state.cities;
-        for (let city of cities){
-            if (city.name === newCity.name){
-                alert("City with this name already exists");
-                return;
-            }
-        }
-        cities.push(newCity)
-        this.setState({ cities : cities });
-    }
-    public SelectCityByName = () => {
-        for (let city of this.props.state.cities){
-            if (city.name === this.props.state.selectedCityName){
-                return city;
-            }
-        }
-        throw new Error("not found");
-    }
-
-    public ChangeCity = (name : string) => {
-        for (let city of this.state.cities){
-            if (city.name === name){
-                this.setState({selectedCityName : name});
-                break;
-            }
-        }
-    }
+                <Route path="/:cityName" component={MainContent} />
+            </Router>
+        </div>
+    )
 }
-
-
-export default connect(
-    state => ({
-        state : state
-    }),
-    dispatch => ({
-    })
-)(App);
