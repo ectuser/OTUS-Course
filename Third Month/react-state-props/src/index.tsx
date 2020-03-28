@@ -38,7 +38,7 @@ const reducer = (state = initialState, action : any) => {
     	// console.log(state, action.payload);
     	return {
 			cities : [...state.cities, action.payload],
-			cityNamesToShow : [...state.cities, action.payload.name]
+			cityNamesToShow : [...state.cityNamesToShow, action.payload.name]
 		}
 	}
 	if (action.type === 'SEARCH_CITY'){
