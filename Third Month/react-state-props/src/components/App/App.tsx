@@ -22,13 +22,20 @@ import {
 export const App = () => {
     // @ts-ignore
     const cities = useSelector(state => state.cities);
-
+    // @ts-ignore
+    const citiyNamesToShow = useSelector(state => state.cityNamesToShow)
+    let citiesToShow = [];
+    for (let city of cities){
+        if (citiyNamesToShow.includes(city.name)){
+            citiesToShow.push(city);
+        }
+    }
     return(
         <div id="main">
             <Router>
                 <div className="cities-list">
                     <SearchCityForm />
-                    {cities.map((item : CityModel, i : number) =>(
+                    {citiesToShow.map((item : CityModel, i : number) =>(
                     <Link key={i} to={`/${item.name}`}>
                         <Switch>
                         <Route path="/:cityName">
