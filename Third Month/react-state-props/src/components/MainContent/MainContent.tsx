@@ -5,10 +5,6 @@ import { City } from "../CitiesList/City/City";
 import { WeatherStatus } from "../../models/WeatherStatus"
 import {
     BrowserRouter as Router,
-    Switch,
-    Route,
-    Link,
-    useRouteMatch,
     useParams
   } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -38,7 +34,6 @@ export const MainContent = () =>{
                     <p>Wind speed: {currentCity.windSpeed}</p>
                     <p>Wind speed: {WeatherStatus[currentCity.weatherStatus]}</p>
                 </div>
-                {/* {cityName} */}
             </div>
         )
 

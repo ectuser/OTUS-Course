@@ -9,6 +9,7 @@ import { AddCity } from "../AddCity/AddCity"
 import { connect, useSelector } from "react-redux"
 import { createStore } from 'redux'
 import { Provider } from "react-redux";
+import { SearchCityForm } from "../SearchCityForm/SearchCityForm"
 import {
     BrowserRouter as Router,
     Switch,
@@ -26,6 +27,7 @@ export const App = () => {
         <div id="main">
             <Router>
                 <div className="cities-list">
+                    <SearchCityForm />
                     {cities.map((item : CityModel, i : number) =>(
                     <Link key={i} to={`/${item.name}`}>
                         <Switch>
