@@ -18,16 +18,34 @@ const InitCities = () => {
 	return cities;
 }
 
+const GetNameFromCities = (cities : CityModel[]) => {
+	let cityNames = [];
+	for (let city of cities){
+		cityNames.push(city.name);
+	}
+	return cityNames;
+}
+
+const initialCities = InitCities();
+
 const initialState = {
-	selectedCityName : "Moscow",
-	cities : InitCities()
+	cities : initialCities,
+	cityNamesToShow : GetNameFromCities(initialCities)
 }
 
 const reducer = (state = initialState, action : any) => {
   	if (action.type === 'ADD_CITY'){
     	// console.log(state, action.payload);
     	return {
-			cities : [...state.cities, action.payload]
+			cities : [...state.cities, action.payload],
+			cityNamesToShow : [...state.cityNamesToShow, action.payload.name]
+		}
+	}
+	if (action.type === 'SEARCH_CITY'){
+		console.log(state.cityNamesToShow, action.payload)
+		return {
+			cities : [...state.cities],
+			cityNamesToShow : [...action.payload]
 		}
 	}
   	return state;

@@ -9,6 +9,7 @@ import { AddCity } from "../AddCity/AddCity"
 import { connect, useSelector } from "react-redux"
 import { createStore } from 'redux'
 import { Provider } from "react-redux";
+import { SearchCityForm } from "../SearchCityForm/SearchCityForm"
 import {
     BrowserRouter as Router,
     Switch,
@@ -21,12 +22,20 @@ import {
 export const App = () => {
     // @ts-ignore
     const cities = useSelector(state => state.cities);
-
+    // @ts-ignore
+    const citiyNamesToShow = useSelector(state => state.cityNamesToShow)
+    let citiesToShow = [];
+    for (let city of cities){
+        if (citiyNamesToShow.includes(city.name)){
+            citiesToShow.push(city);
+        }
+    }
     return(
         <div id="main">
             <Router>
                 <div className="cities-list">
-                    {cities.map((item : CityModel, i : number) =>(
+                    <SearchCityForm />
+                    {citiesToShow.map((item : CityModel, i : number) =>(
                     <Link key={i} to={`/${item.name}`}>
                         <Switch>
                         <Route path="/:cityName">
