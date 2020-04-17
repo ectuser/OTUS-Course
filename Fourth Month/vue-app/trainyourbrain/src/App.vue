@@ -5,7 +5,9 @@
 				<b-col lg="6">
 					<Settings />
 				</b-col>
-				<b-col lg="6">1 of 2</b-col>
+				<b-col lg="6">
+					<GameScreen />
+				</b-col>
 			</b-row>
 		</b-container>
 	</div>
@@ -14,11 +16,13 @@
 <script>
 // import HelloWorld from './components/HelloWorld.vue'
 import Settings from './components/Settings'
+import GameScreen from './components/GameScreen'
 
 export default {
 	name: 'App',
 	components: {
-		Settings
+		Settings,
+		GameScreen
 	}
 }
 </script>
