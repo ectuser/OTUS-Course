@@ -45,7 +45,10 @@
     </div>
 </template>
 
+
+
 <script>
+import eventBus from '../bus';
 export default {
     name: 'Settings',
     data(){
@@ -56,7 +59,7 @@ export default {
                 "multiplication" : "*",
                 "division" : "/",
                 "exponentiation" : "**"
-        },
+            },
             form : {
                 duration : "7",
                 difficulty : "5",
@@ -67,12 +70,7 @@ export default {
     methods : {
         async onSubmit(){
             const toUseOperators = await this.stringOperatorsNamesToSymbols(this.form.selectedOperations);
-            let tasks = [];
-            for (let i = 0; i < 1000; i++){
-                let newTask = await this.generateTask(toUseOperators);
-                tasks.push(newTask);
-            }
-            console.log(tasks);
+            eventBus.$emit('onPlay', this.form, toUseOperators);
         },
         async stringOperatorsNamesToSymbols(arr){
             let result = [];
@@ -81,47 +79,6 @@ export default {
                 result.push(this.operators[operator])
             }
             return result;
-        },
-        async generateTask(toUseOperators){
-            // console.log(toUseOperators);
-            let order = 1;
-            let numberOfNumbers = 2;
-            let task = {};
-            if (this.form.difficulty === "2"){
-                order = 1;
-                numberOfNumbers = 3;
-            }
-            else if (this.form.difficulty === "2"){
-                order = 2;
-                numberOfNumbers = 3;
-            }
-            else if (this.form.difficulty === "3"){
-                order = 3;
-                numberOfNumbers = 3;
-            }
-            else if (this.form.difficulty === "4"){
-                order = 3;
-                numberOfNumbers = 4;
-            }
-            let strExpression = "";
-            for (let i = 0; i < numberOfNumbers - 1; i++){
-                strExpression += await this.generateNumber(order);
-                let randomNumber = await this.generateRandomNumber(toUseOperators.length);
-                strExpression += toUseOperators[randomNumber];
-                
-            }
-            strExpression += await this.generateNumber(order);
-            // strExpression += " = ";
-            task.expression = strExpression;
-            task.answer = eval(strExpression);
-            return task;
-            // task.answer = 
-        },
-        async generateNumber(order){
-            return await this.generateRandomNumber(10**order);
-        },
-        async generateRandomNumber(max, min = 0){
-            return Math.floor(Math.random() * (max - min)) + min;
         }
     }
 
