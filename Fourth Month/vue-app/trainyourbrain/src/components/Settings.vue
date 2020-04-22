@@ -13,7 +13,7 @@
                     required
                     min="1" 
                     max="15"
-                    v-model="form.duration"
+                    v-model.number="form.duration"
                 >
                 </b-form-input>   
             </b-form-group>
@@ -27,7 +27,7 @@
                     required
                     min="1" 
                     max="10"
-                    v-model="form.difficulty"
+                    v-model.number="form.difficulty"
                 >
                 </b-form-input>   
             </b-form-group>
@@ -61,14 +61,18 @@ export default {
                 "exponentiation" : "**"
             },
             form : {
-                duration : "7",
-                difficulty : "5",
+                duration : 7,
+                difficulty : 5,
                 selectedOperations : []
             }
         });
     },
     methods : {
         async onSubmit(){
+            if (this.form.selectedOperations.length === 0){
+                alert("Choose at least one operator");
+                return;
+            }
             const toUseOperators = await this.stringOperatorsNamesToSymbols(this.form.selectedOperations);
             eventBus.$emit('onPlay', this.form, toUseOperators);
         },

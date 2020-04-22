@@ -1,6 +1,8 @@
 <template>
 	<div id="app">
-		<b-container fluid="xl">
+		<router-view></router-view>
+		<!-- <Settings /> -->
+		<!-- <b-container fluid="xl">
 			<b-row>
 				<b-col lg="6">
 					<Settings />
@@ -11,14 +13,14 @@
 			</b-row>
 			<div>{{ timer }} / {{ selectedSettingsToPlay.duration * 60 }}</div>
 			<div>{{ currentScore }}</div>
-		</b-container>
+		</b-container> -->
 	</div>
 </template>
 
 <script>
 // import HelloWorld from './components/HelloWorld.vue'
-import Settings from './components/Settings'
-import GameScreen from './components/GameScreen'
+// import Settings from './components/Settings'
+// import GameScreen from './components/GameScreen'
 import eventBus from './bus'
 
 export default {
@@ -40,14 +42,10 @@ export default {
 	},
 	methods : {
 		async getAnswer(userAnswer){
-			try{
-				let userAnswerNumber = Number(userAnswer);
+			let userAnswerNumber = userAnswer;
 				if (this.currentTask.answer === userAnswerNumber){
 					this.currentScore++;
 				} 
-			} catch(e){
-				console.log(e);
-			}
 			await this.nextTask();
 		},
 		async useSettings(settings, selectedOperators){
@@ -55,6 +53,7 @@ export default {
 			this.selectedSettingsToPlay = settings;
 			this.selectedOperators = selectedOperators;
 			this.stop = false;
+			this.$router.push('game'); 
 			await this.nextTask();
 		},
 		async nextTask(){
@@ -71,19 +70,19 @@ export default {
             let order = 1;
             let numberOfNumbers = 2;
             let task = {};
-            if (settings.difficulty === "2"){
+            if (settings.difficulty === 2){
                 order = 1;
                 numberOfNumbers = 3;
             }
-            else if (settings.difficulty === "2"){
+            else if (settings.difficulty === 3){
                 order = 2;
                 numberOfNumbers = 3;
             }
-            else if (settings.difficulty === "3"){
+            else if (settings.difficulty === 4){
                 order = 3;
                 numberOfNumbers = 3;
             }
-            else if (settings.difficulty === "4"){
+            else if (settings.difficulty === 5){
                 order = 3;
                 numberOfNumbers = 4;
             }
@@ -109,7 +108,7 @@ export default {
 					clearInterval(inter);
 				}
 			}, 1000)
-			inter();
+			// inter();
 		},
         async generateNumber(order){
             return await this.generateRandomNumber(10**order);
@@ -119,19 +118,19 @@ export default {
         }
 	},
 	components: {
-		Settings,
-		GameScreen
+		// Settings,
+		// GameScreen
 	}
 }
 </script>
 
 <style>
-#app {
+/* #app {
 	font-family: Avenir, Helvetica, Arial, sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	text-align: center;
 	color: #2c3e50;
 	margin-top: 60px;
-}
+} */
 </style>
