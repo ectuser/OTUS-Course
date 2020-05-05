@@ -22,6 +22,7 @@
 // import Settings from './components/Settings'
 // import GameScreen from './components/GameScreen'
 import eventBus from './bus'
+import { mapActions } from 'vuex'
 
 export default {
 	name: 'App',
@@ -41,9 +42,10 @@ export default {
 		eventBus.$on('onAnswer', (...args) => { this.getAnswer(...args) })
 	},
 	methods : {
+		...mapActions(['changeTask']),
 		async getAnswer(userAnswer){
 			let userAnswerNumber = userAnswer;
-				if (this.currentTask.answer === userAnswerNumber){
+				if (this.$store.state.task.answer === userAnswerNumber){
 					this.currentScore++;
 				} 
 			await this.nextTask();
@@ -53,8 +55,8 @@ export default {
 			this.selectedSettingsToPlay = settings;
 			this.selectedOperators = selectedOperators;
 			this.stop = false;
-			this.$router.push('game'); 
 			await this.nextTask();
+			this.$router.push('game'); 
 		},
 		async nextTask(){
 			if (!this.stop){
@@ -62,7 +64,9 @@ export default {
 				this.taskIndex++;
 				let newTask = await this.generateTask(this.selectedOperators, this.selectedSettingsToPlay);
 				// tasks.push(newTask);
-				this.currentTask = newTask;
+				// this.currentTask = newTask;
+				this.changeTask(newTask);
+				// this.$store.task = newTask;
 			}
 		},
 		async generateTask(toUseOperators, settings){
@@ -102,13 +106,12 @@ export default {
 			let inter = setInterval(() => {
 				this.timer++;
 				if (this.timer >= parseInt(this.selectedSettingsToPlay.duration) * 60){
-					this.stop = true;
+					// this.stop = true;
 
-					alert("That's all");
+					// alert("That's all");
 					clearInterval(inter);
 				}
 			}, 1000)
-			// inter();
 		},
         async generateNumber(order){
             return await this.generateRandomNumber(10**order);

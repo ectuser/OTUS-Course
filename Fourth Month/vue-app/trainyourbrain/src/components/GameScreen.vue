@@ -1,6 +1,6 @@
 <template>
     <div id="game">
-        <p>{{ expression }}</p>
+        <p>{{ this.$store.state.task.expression }}</p>
         <input type="number" v-model.number="userAnswer">
         <button type="submit" @click="click">=</button>
     </div>
@@ -17,12 +17,10 @@ export default {
     },
     methods : {
         click(){
+            console.log(this.userAnswer);
             eventBus.$emit('onAnswer', this.userAnswer);
             this.userAnswer = "";
         }
-    },
-    props : {
-        expression : String
     }
 }
 </script>
