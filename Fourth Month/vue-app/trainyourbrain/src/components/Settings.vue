@@ -1,5 +1,12 @@
 <template>
     <div id="settings">
+        <b-container>
+            <header class="mb-4">
+                <h2>Hi!</h2>
+                <div>Welcome to your N training math day</div>
+                <div>Your last result was N task of M was solved</div>
+                <div>Average success is N%</div>
+            </header>
         <b-form @submit="onSubmit" onSubmit="return false;">
             <b-form-group
                 id="input-group-1"
@@ -42,6 +49,7 @@
             </div>
             <b-button type="submit" variant="primary">Start</b-button>
       </b-form>
+    </b-container>
     </div>
 </template>
 
