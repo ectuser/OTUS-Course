@@ -18,9 +18,6 @@
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld.vue'
-// import Settings from './components/Settings'
-// import GameScreen from './components/GameScreen'
 import eventBus from './bus'
 import { mapActions } from 'vuex'
 
