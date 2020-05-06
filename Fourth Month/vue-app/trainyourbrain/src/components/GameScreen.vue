@@ -2,8 +2,6 @@
     <div id="game">
         <div class="calculator-container">
             <h3 class="text-center">{{ this.$store.state.task.expression }}={{this.userAnswer}}</h3>
-            <input type="number" v-model.number="userAnswer">
-            <button type="submit" @click="click">=</button>
             <b-row class="mb-5">
                 <b-col xs="3" class="text-center">
                     <div class="circle number" @click="numberClickHandler"><span>1</span></div>
@@ -60,6 +58,7 @@
                     <div class="circle operation" @click="operationClickHandler"><span>=</span></div>
                 </b-col>
             </b-row>
+            <div>Score: {{ this.$store.state.correctAnswers }}</div>
         </div>
     </div>
 </template>
@@ -75,16 +74,42 @@ export default {
     },
     methods : {
         click(){
-            console.log(this.userAnswer);
-            eventBus.$emit('onAnswer', this.userAnswer);
-            this.userAnswer = "";
+            console.log("somethins");
         },
-        numberClickHandler(item){
-            this.userAnswer += 
+        numberClickHandler(event){
+            console.log(event.target.textContent);
+            this.userAnswer += event.target.textContent;
         },
-        operationClickHandler(item){
+        operationClickHandler(event){
+            const symbol = event.target.textContent;
+            if (symbol === "<"){
+                this.userAnswer = this.userAnswer.slice(0, -1); 
+            }
+            else if (symbol == ">"){
+                console.log("Help")
+            }
+            else if (symbol == "?"){
+                console.log("Help")
+            }
+            else if (symbol === "="){
 
+                eventBus.$emit('onAnswer', parseInt(this.userAnswer, 10));
+                this.userAnswer = "";
+            }
+            else{
+                throw new Error("Can't define operation");
+            }
         }
+    },
+    mounted(){
+        window.addEventListener("keydown", function(event) {
+            let str = "KeyboardEvent: key='" + event.key + "' | code='" +
+                        event.code + "'";
+            let el = document.createElement("span");
+            el.innerHTML = str + "<br/>";
+            
+            document.getElementById("output").appendChild(el);
+        }, true);
     }
 }
 </script>

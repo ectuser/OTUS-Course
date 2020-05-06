@@ -39,11 +39,11 @@ export default {
 		eventBus.$on('onAnswer', (...args) => { this.getAnswer(...args) })
 	},
 	methods : {
-		...mapActions(['changeTask']),
+		...mapActions(['changeTask', 'increaseCorrectAnswers']),
 		async getAnswer(userAnswer){
 			let userAnswerNumber = userAnswer;
 				if (this.$store.state.task.answer === userAnswerNumber){
-					this.currentScore++;
+					this.increaseCorrectAnswers();
 				} 
 			await this.nextTask();
 		},
@@ -57,13 +57,9 @@ export default {
 		},
 		async nextTask(){
 			if (!this.stop){
-				// let tasks = [];
 				this.taskIndex++;
 				let newTask = await this.generateTask(this.selectedOperators, this.selectedSettingsToPlay);
-				// tasks.push(newTask);
-				// this.currentTask = newTask;
 				this.changeTask(newTask);
-				// this.$store.task = newTask;
 			}
 		},
 		async generateTask(toUseOperators, settings){
