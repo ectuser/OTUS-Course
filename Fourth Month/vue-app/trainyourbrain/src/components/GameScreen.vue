@@ -73,9 +73,6 @@ export default {
         })
     },
     methods : {
-        click(){
-            console.log("somethins");
-        },
         numberClickHandler(event){
             console.log(event.target.textContent);
             this.userAnswer += event.target.textContent;
@@ -93,22 +90,35 @@ export default {
             }
             else if (symbol === "="){
 
-                eventBus.$emit('onAnswer', parseInt(this.userAnswer, 10));
-                this.userAnswer = "";
+                this.sendAnswer();
             }
             else{
                 throw new Error("Can't define operation");
             }
+        },
+        sendAnswer(){
+            eventBus.$emit('onAnswer', parseInt(this.userAnswer, 10));
+            this.userAnswer = "";
         }
     },
     mounted(){
         window.addEventListener("keydown", function(event) {
-            let str = "KeyboardEvent: key='" + event.key + "' | code='" +
-                        event.code + "'";
-            let el = document.createElement("span");
-            el.innerHTML = str + "<br/>";
-            
-            document.getElementById("output").appendChild(el);
+            let regexp = /[0-9]/;
+            console.log(event.key);
+            if (event.key.search(regexp) !== -1){
+                let numbers = document.querySelectorAll(`.number`);
+                for(let number of numbers){
+                    if (event.key === number.textContent){
+                        number.click();
+                        break;
+                    } 
+                }
+            }
+            else if (event.key === 'Enter'){
+               eventBus.$emit('onAnswer', parseInt(this.userAnswer, 10));
+                this.userAnswer = "";
+                
+            }
         }, true);
     }
 }
@@ -135,6 +145,9 @@ export default {
     .number:hover{
         background: rgb(243, 90, 44);
     }
+    /* .number{
+        background: rgb(243, 90, 44);
+    } */
     .operation{
         background: rgb(122, 122, 122);
     }
