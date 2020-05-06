@@ -1,6 +1,10 @@
 <template>
     <div id="game">
         <div class="calculator-container">
+            <b-row class="game-window-header">
+                <b-col><div class="text-left header-button cancel"><span class="font-weight-bold mr-2">X</span><span>CANCEL</span></div></b-col>
+                <b-col><div class="text-right header-button float-right timer">{{this.$store.getters.getLeftTimeInNiceFormat}}</div></b-col>
+            </b-row>
             <h3 class="text-center">{{ this.$store.state.task.expression }}={{this.userAnswer}}</h3>
             <b-row class="mb-5">
                 <b-col xs="3" class="text-center">
@@ -58,13 +62,14 @@
                     <div class="circle operation" @click="operationClickHandler"><span>=</span></div>
                 </b-col>
             </b-row>
-            <div>Score: {{ this.$store.state.correctAnswers }}</div>
+            <div>Score: {{ this.$store.state.correctAnswers }} / {{ this.$store.state.tasksAmount }}</div>
         </div>
     </div>
 </template>
 
 <script>
 import eventBus from '../bus';
+import { mapActions } from 'vuex'
 export default {
     name : "GameScreen",
     data(){
@@ -73,6 +78,7 @@ export default {
         })
     },
     methods : {
+        ...mapActions(['setSpentTime']),
         numberClickHandler(event){
             console.log(event.target.textContent);
             this.userAnswer += event.target.textContent;
@@ -165,5 +171,19 @@ export default {
     .none{
         opacity: 0;
         cursor: default;
+    }
+    .game-window-header{
+        color: #C0C0C0;
+    }
+    .cancel, .timer{
+        box-shadow: 0px 4px 4px #cfcbcb;
+    }
+    .cancel:hover{
+        cursor: pointer;
+        background: #f0f0f0;
+    }
+    .header-button{
+        width: 100px;
+        padding: 10px;
     }
 </style>

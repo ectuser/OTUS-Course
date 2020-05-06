@@ -39,8 +39,9 @@ export default {
 		eventBus.$on('onAnswer', (...args) => { this.getAnswer(...args) })
 	},
 	methods : {
-		...mapActions(['changeTask', 'increaseCorrectAnswers']),
+		...mapActions(['changeTask', 'increaseCorrectAnswers', 'increaseTasksAmount', 'setAllTime', 'increaseSpentTime']),
 		async getAnswer(userAnswer){
+			this.increaseTasksAmount();
 			let userAnswerNumber = userAnswer;
 				if (this.$store.state.task.answer === userAnswerNumber){
 					this.increaseCorrectAnswers();
@@ -52,6 +53,7 @@ export default {
 			this.selectedSettingsToPlay = settings;
 			this.selectedOperators = selectedOperators;
 			this.stop = false;
+			this.setAllTime(settings.duration*60);
 			await this.nextTask();
 			this.$router.push('game'); 
 		},
@@ -59,6 +61,9 @@ export default {
 			if (!this.stop){
 				this.taskIndex++;
 				let newTask = await this.generateTask(this.selectedOperators, this.selectedSettingsToPlay);
+
+				
+
 				this.changeTask(newTask);
 			}
 		},
@@ -97,12 +102,20 @@ export default {
 		},
 		async tick(){
 			let inter = setInterval(() => {
-				this.timer++;
-				if (this.timer >= parseInt(this.selectedSettingsToPlay.duration) * 60){
-					// this.stop = true;
-
-					// alert("That's all");
+				this.increaseSpentTime();
+				if (this.$store.state.allTime <= this.$store.state.spentTime){
+					this.stop = true;
 					clearInterval(inter);
+
+					let results = {results : this.$store.state.todayData.results};
+					results.results.push(this.$store.state.correctAnswers / this.$store.state.tasksAmount);
+
+					this.saveAllData(
+						this.$store.state.todayData.trainingDay, 
+						{correctAnswers : this.$store.state.correctAnswers, tasksAmount : this.$store.state.tasksAmount},
+						results);
+
+					this.$router.push('/'); 
 				}
 			}, 1000)
 		},
@@ -111,11 +124,12 @@ export default {
         },
         async generateRandomNumber(max, min = 0){
             return Math.floor(Math.random() * (max - min)) + min;
-        }
-	},
-	components: {
-		// Settings,
-		// GameScreen
+		},
+		saveAllData(trainingDay, lastResultObj, results){
+			localStorage.setItem('trainingDay', trainingDay);
+			localStorage.setItem('lastResult', JSON.stringify(lastResultObj));
+			localStorage.setItem('results', JSON.stringify(results));
+		} 
 	}
 }
 </script>

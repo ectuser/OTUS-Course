@@ -3,9 +3,9 @@
         <b-container>
             <header class="mb-4">
                 <h2>Hi!</h2>
-                <div>Welcome to your N training math day</div>
-                <div>Your last result was N task of M was solved</div>
-                <div>Average success is N%</div>
+                <div>Welcome to your {{this.$store.state.todayData.trainingDay}} training math day</div>
+                <div v-if="this.$store.state.todayData.results.length !== 0">Your last result was {{this.$store.state.todayData.lastResult.correctAnswers}} task of {{this.$store.state.todayData.lastResult.tasksAmount}} was solved</div>
+                <div v-if="this.$store.state.todayData.results.length !== 0">Average success is {{this.$store.getters.getResultsAverage}}</div>
             </header>
         <b-form @submit="onSubmit" onSubmit="return false;">
             <b-form-group
@@ -57,6 +57,7 @@
 
 <script>
 import eventBus from '../bus';
+import { mapActions } from 'vuex'
 export default {
     name: 'Settings',
     data(){
@@ -76,6 +77,7 @@ export default {
         });
     },
     methods : {
+        ...mapActions(['setTodayData']),
         async onSubmit(){
             if (this.form.selectedOperations.length === 0){
                 alert("Choose at least one operator");
@@ -92,6 +94,17 @@ export default {
             }
             return result;
         }
+    },
+    created(){
+        let trainingDay = parseInt(localStorage.getItem('trainingDay'),10) || 0;
+        let lastResult = JSON.parse(localStorage.getItem('lastResult')) || {};
+        let results = JSON.parse(localStorage.getItem('results')) || {results : []};
+
+        this.setTodayData({
+            trainingDay : trainingDay,
+            lastResult : lastResult,
+            results : results.results
+        });
     }
 
 }
