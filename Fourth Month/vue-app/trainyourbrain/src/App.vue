@@ -27,19 +27,17 @@ export default {
 		return({
 			selectedSettingsToPlay : {},
 			selectedOperators : [],
-			currentTask : {},
-			currentScore : 0,
-			taskIndex : 0,
-			timer : 0,
-			stop : true
+			stop : true,
+			inter : ""
 		});
 	},
 	mounted(){
 		eventBus.$on('onPlay', (...args) => { this.useSettings(...args) })
 		eventBus.$on('onAnswer', (...args) => { this.getAnswer(...args) })
+		eventBus.$on('onExit', () => { this.exit() })
 	},
 	methods : {
-		...mapActions(['changeTask', 'increaseCorrectAnswers', 'increaseTasksAmount', 'setAllTime', 'increaseSpentTime']),
+		...mapActions(['changeTask', 'increaseCorrectAnswers', 'increaseTasksAmount', 'setAllTime', 'increaseSpentTime', 'setDefaultState']),
 		async getAnswer(userAnswer){
 			this.increaseTasksAmount();
 			let userAnswerNumber = userAnswer;
@@ -47,6 +45,12 @@ export default {
 					this.increaseCorrectAnswers();
 				} 
 			await this.nextTask();
+		},
+		exit(){
+			this.setDefaultState();
+			this.stop = true;
+			clearInterval(this.inter);
+			this.$router.push('/'); 
 		},
 		async useSettings(settings, selectedOperators){
 			this.tick();
@@ -59,7 +63,6 @@ export default {
 		},
 		async nextTask(){
 			if (!this.stop){
-				this.taskIndex++;
 				let newTask = await this.generateTask(this.selectedOperators, this.selectedSettingsToPlay);
 
 				
@@ -71,7 +74,7 @@ export default {
             // console.log(toUseOperators);
             let order = 1;
             let numberOfNumbers = 2;
-            let task = {};
+			let task = {};
             if (settings.difficulty === 2){
                 order = 1;
                 numberOfNumbers = 3;
@@ -87,7 +90,7 @@ export default {
             else if (settings.difficulty === 5){
                 order = 3;
                 numberOfNumbers = 4;
-            }
+			}
             let strExpression = "";
             for (let i = 0; i < numberOfNumbers - 1; i++){
                 strExpression += await this.generateNumber(order);
@@ -101,11 +104,11 @@ export default {
             return task;
 		},
 		async tick(){
-			let inter = setInterval(() => {
+			this.inter = setInterval(() => {
 				this.increaseSpentTime();
-				if (this.$store.state.allTime <= this.$store.state.spentTime){
+				if (this.$store.state.allTime <= this.$store.state.spentTime && this.$store.state.allTime !== 0){
 					this.stop = true;
-					clearInterval(inter);
+					clearInterval(this.inter);
 
 					let results = {results : this.$store.state.todayData.results};
 					results.results.push(this.$store.state.correctAnswers / this.$store.state.tasksAmount);
@@ -114,6 +117,8 @@ export default {
 						this.$store.state.todayData.trainingDay, 
 						{correctAnswers : this.$store.state.correctAnswers, tasksAmount : this.$store.state.tasksAmount},
 						results);
+
+					this.setDefaultState();
 
 					this.$router.push('/'); 
 				}

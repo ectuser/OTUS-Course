@@ -2,7 +2,7 @@
     <div id="game">
         <div class="calculator-container">
             <b-row class="game-window-header">
-                <b-col><div class="text-left header-button cancel"><span class="font-weight-bold mr-2">X</span><span>CANCEL</span></div></b-col>
+                <b-col><div class="text-left header-button cancel" @click="cancel"><span class="font-weight-bold mr-2">X</span><span>CANCEL</span></div></b-col>
                 <b-col><div class="text-right header-button float-right timer">{{this.$store.getters.getLeftTimeInNiceFormat}}</div></b-col>
             </b-row>
             <h3 class="text-center">{{ this.$store.state.task.expression }}={{this.userAnswer}}</h3>
@@ -79,6 +79,9 @@ export default {
     },
     methods : {
         ...mapActions(['setSpentTime']),
+        cancel(){
+            eventBus.$emit('onExit');
+        },
         numberClickHandler(event){
             console.log(event.target.textContent);
             this.userAnswer += event.target.textContent;
@@ -106,26 +109,6 @@ export default {
             eventBus.$emit('onAnswer', parseInt(this.userAnswer, 10));
             this.userAnswer = "";
         }
-    },
-    mounted(){
-        window.addEventListener("keydown", function(event) {
-            let regexp = /[0-9]/;
-            console.log(event.key);
-            if (event.key.search(regexp) !== -1){
-                let numbers = document.querySelectorAll(`.number`);
-                for(let number of numbers){
-                    if (event.key === number.textContent){
-                        number.click();
-                        break;
-                    } 
-                }
-            }
-            else if (event.key === 'Enter'){
-               eventBus.$emit('onAnswer', parseInt(this.userAnswer, 10));
-                this.userAnswer = "";
-                
-            }
-        }, true);
     }
 }
 </script>

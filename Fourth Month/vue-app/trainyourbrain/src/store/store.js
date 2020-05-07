@@ -3,6 +3,20 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+const defaultState = {
+    task : Object(),
+    correctAnswers : 0,
+    tasksAmount : 0,
+    allTime : 0,
+    spentTime : 0,
+    todayData : {
+        trainingDay : 0,
+        lastResult : Object(),
+        results : []
+    }
+};
+export {defaultState};
+
 export default new Vuex.Store({
     state : {
         task : Object(),
@@ -17,6 +31,18 @@ export default new Vuex.Store({
         }
     },
     mutations : {
+        setDefaultState(state){
+            state.task = Object();
+            state.correctAnswers = 0; 
+            state.tasksAmount = 0;
+            state.allTime = 0;
+            state.spentTime = 0;
+            state.todayData = {
+                trainingDay : 0,
+                lastResult : Object(),
+                results : []
+            };
+        },
         changeTask(state, payload){
             state.task = {...payload};
         },
@@ -38,6 +64,9 @@ export default new Vuex.Store({
                 lastResult : {...payload.lastResult},
                 results : [...payload.results]
             }
+        },
+        changeTrainingDay(state){
+            state.todayData.trainingDay++;
         }
     },
     actions : {
@@ -58,6 +87,12 @@ export default new Vuex.Store({
         },
         setTodayData(context, payload){
             context.commit('setTodayData', payload);
+        },
+        setDefaultState(context){
+            context.commit('setDefaultState');
+        },
+        changeTrainingDay(context){
+            context.commit('changeTrainingDay');
         }
     },
     getters: {
@@ -85,7 +120,7 @@ export default new Vuex.Store({
             for (let res of state.todayData.results){
                 sum += parseFloat(res);
             }
-            return sum / state.todayData.results.length;
+            return (sum / state.todayData.results.length * 100).toFixed(2);
         }
     }
 })

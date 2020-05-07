@@ -5,7 +5,7 @@
                 <h2>Hi!</h2>
                 <div>Welcome to your {{this.$store.state.todayData.trainingDay}} training math day</div>
                 <div v-if="this.$store.state.todayData.results.length !== 0">Your last result was {{this.$store.state.todayData.lastResult.correctAnswers}} task of {{this.$store.state.todayData.lastResult.tasksAmount}} was solved</div>
-                <div v-if="this.$store.state.todayData.results.length !== 0">Average success is {{this.$store.getters.getResultsAverage}}</div>
+                <div v-if="this.$store.state.todayData.results.length !== 0">Average success is {{this.$store.getters.getResultsAverage}} %</div>
             </header>
         <b-form @submit="onSubmit" onSubmit="return false;">
             <b-form-group
@@ -47,7 +47,7 @@
                     stacked
                 ></b-form-checkbox-group>
             </div>
-            <b-button type="submit" variant="primary">Start</b-button>
+            <b-button class="float-right" type="submit" variant="primary">Start</b-button>
       </b-form>
     </b-container>
     </div>
@@ -77,7 +77,7 @@ export default {
         });
     },
     methods : {
-        ...mapActions(['setTodayData']),
+        ...mapActions(['setTodayData', 'changeTrainingDay']),
         async onSubmit(){
             if (this.form.selectedOperations.length === 0){
                 alert("Choose at least one operator");
@@ -105,6 +105,24 @@ export default {
             lastResult : lastResult,
             results : results.results
         });
+    },
+    mounted(){
+        let lastTrainingDay;
+        try{
+            lastTrainingDay = Number(localStorage.getItem('lastTrainingDay'));
+        } catch(e){
+            lastTrainingDay = Date.now();
+            localStorage.setItem('lastTrainingDay', Date.now().toString());
+        }
+        let now = Date.now();
+        let difference = now - lastTrainingDay;
+        // если хотите чекнуть, как работает изменение training day, поменяйте /(3600 * 1000) на что-нибудь поменьше, например, /1000
+        if (difference / (3600 * 1000) >= 24){
+            this.changeTrainingDay();
+            localStorage.setItem('lastTrainingDay', Date.now().toString());
+            localStorage.setItem('trainingDay', this.$store.state.todayData.trainingDay.toString());
+        }
+
     }
 
 }
